@@ -234,8 +234,40 @@ bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
 			return false;
 		if(to_x != from_x && (board[to_x][to_y].piece == EMPTY || board[to_x][to_y].side == WHITE))
 			return false;
+	} else {
+		if(from_x == to_x && from_y == 6 && to_y == 4 && board[to_x][to_y].piece == EMPTY)
+			return true;
+		if(to_x < from_x -1 || to_x > from_x + 1 || from_y - 1 != to_y)
+			return false;
+		if(to_x == from_x && board[to_x][to_y].piece != EMPTY)
+			return false;
+		if(to_x != from_x && (board[to_x][to_y].piece == EMPTY || board[to_x][to_y].side == BLACK))
+			return false;
 	}
 	return true;
+}
+
+bool check_knight_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == board[from_x][from_y].side)
+		return false;
+	if(from_x + 1 == to_x && from_y + 2 == to_y)
+		return true;
+	if(from_x + 2 == to_x && from_y + 1 == to_y)
+		return true;
+	if(from_x + 2 == to_x && from_y - 1 == to_y)
+		return true;
+	if(from_x + 1 == to_x && from_y - 2 == to_y)
+		return true;
+	if(from_x - 1 == to_x && from_y - 2 == to_y)
+		return true;
+	if(from_x - 2 == to_x && from_y - 1 == to_y)
+		return true;
+	if(from_x - 2 == to_x && from_y + 1 == to_y)
+		return true;
+	if(from_x - 1 == to_x && from_y + 2 == to_y)
+		return true;
+	return false;
 }
 
 bool check_moveset(int from_x, int from_y, int to_x, int to_y)
@@ -246,14 +278,17 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 			v = check_pawn_moveset(from_x, from_y, to_x, to_y);
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid pawn move" : "Invalid pawn move");
 			return v;
+		case KNIGHT:
+			v = check_knight_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid knight move" : "Invalid knight move");
+			return v;
 	}
 }
 
 void make_move(int from_x, int from_y, int to_x, int to_y)
 {
-	if(!check_moveset(from_x, from_y, to_x, to_y)) {
+	if(!check_moveset(from_x, from_y, to_x, to_y))
 		return;
-	}
 }
 
 // Draw functions
