@@ -1,7 +1,6 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
 #include <SDL2/SDL_image.h>
 #include <unistd.h>
 #include <string.h>
@@ -223,6 +222,40 @@ void setup_board()
 	}
 }
 
+bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	// TODO en passe
+	if(board[from_x][from_y].side == WHITE) {
+		if(from_x == to_x && from_y == 1 && to_y == 3 && board[to_x][to_y].piece == EMPTY)
+			return true;
+		if(to_x < from_x - 1 || to_x > from_x + 1 || from_y + 1 != to_y)
+			return false;
+		if(to_x == from_x && board[to_x][to_y].piece != EMPTY)
+			return false;
+		if(to_x != from_x && (board[to_x][to_y].piece == EMPTY || board[to_x][to_y].side == WHITE))
+			return false;
+	}
+	return true;
+}
+
+bool check_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	bool v;
+	switch(board[from_x][from_y].piece) {
+		case PAWN:
+			v = check_pawn_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid pawn move" : "Invalid pawn move");
+			return v;
+	}
+}
+
+void make_move(int from_x, int from_y, int to_x, int to_y)
+{
+	if(!check_moveset(from_x, from_y, to_x, to_y)) {
+		return;
+	}
+}
+
 // Draw functions
 
 void draw_chessboard()
@@ -281,14 +314,27 @@ void commit_frame()
 void check_input(SDL_MouseButtonEvent event)
 {
 	int x_s, y_s;
+	if(event.button == SDL_BUTTON_RIGHT) {
+		selected[0] = -1;
+		selected[1] = -1;
+		return;
+	}
 	if(event.button != SDL_BUTTON_LEFT)
 		return;
 	if(event.x < 0 || event.x > SIZE || event.y < 0 || event.y > SIZE)
 		return;
-	x_s = event.x / 80;
-	y_s = (SIZE - event.y) / 80;
-	selected[0] = x_s;
-	selected[1] = y_s;
+
+	x_s = event.x / (SIZE / 8);
+	y_s = (SIZE - event.y) / (SIZE / 8);
+	if(selected[0] == -1 && (turn != board[x_s][y_s].side || board[x_s][y_s].piece == EMPTY))
+		return;
+
+	if(selected[0] == -1) {
+		selected[0] = x_s;
+		selected[1] = y_s;
+	} else if(selected[0] != -1) {
+		make_move(selected[0], selected[1], x_s, y_s);
+	}
 }
 
 void check_event_queue()
@@ -302,7 +348,7 @@ void check_event_queue()
 			case SDL_MOUSEBUTTONDOWN:
 				check_input(event.button);
 			default:
-				continue;
+				break;
 		}
 	}
 }
