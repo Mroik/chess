@@ -270,6 +270,48 @@ bool check_knight_moveset(int from_x, int from_y, int to_x, int to_y)
 	return false;
 }
 
+bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	bool ne = true, se = true, sw = true, nw = true;
+	if(abs(to_x - from_x) != abs(to_y - from_y))
+		return false;
+
+	for(int i = 1; i <= 7; i++) {
+		if(ne && from_x + i == to_x && from_y + i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(ne && board[from_x + i][from_y + i].piece != EMPTY) {
+			ne = false;
+		}
+
+		if(se && from_x + i == to_x && from_y - i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(se && board[from_x + i][from_y - i].piece != EMPTY) {
+			se = false;
+		}
+
+		if(sw && from_x - i == to_x && from_y - i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(sw && board[from_x - i][from_y - i].piece != EMPTY) {
+			sw = false;
+		}
+
+		if(nw && from_x - i == to_x && from_y + i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(nw && board[from_x - i][from_y + i].piece != EMPTY) {
+			nw = false;
+		}
+	}
+	return true;
+}
+
 bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	bool v;
@@ -281,6 +323,10 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 		case KNIGHT:
 			v = check_knight_moveset(from_x, from_y, to_x, to_y);
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid knight move" : "Invalid knight move");
+			return v;
+		case BISHOP:
+			v = check_bishop_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid bishop move" : "Invalid bishop move");
 			return v;
 	}
 }
