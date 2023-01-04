@@ -273,9 +273,6 @@ bool check_knight_moveset(int from_x, int from_y, int to_x, int to_y)
 bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	bool ne = true, se = true, sw = true, nw = true;
-	if(abs(to_x - from_x) != abs(to_y - from_y))
-		return false;
-
 	for(int i = 1; i <= 7; i++) {
 		if(ne && from_x + i == to_x && from_y + i == to_y) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
@@ -309,7 +306,46 @@ bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
 			nw = false;
 		}
 	}
-	return true;
+	return false;
+}
+
+bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	bool n = true, e = true, s = true, w = true;
+	for(int i = 1; i <= 7; i++) {
+		if(n && from_x == to_x && from_y + i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(n && board[from_x][from_y + i].piece != EMPTY) {
+			n = false;
+		}
+
+		if(e && from_x + i == to_x && from_y == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(e && board[from_x + i][from_y].piece != EMPTY) {
+			e = false;
+		}
+
+		if(s && from_x == to_x && from_y - i == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(s && board[from_x][from_y - i].piece != EMPTY) {
+			s = false;
+		}
+
+		if(w && from_x - i == to_x && from_y == to_y) {
+			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+				return false;
+			return true;
+		} else if(w && board[from_x - i][from_y].piece != EMPTY) {
+			w = false;
+		}
+	}
+	return false;
 }
 
 bool check_moveset(int from_x, int from_y, int to_x, int to_y)
@@ -327,6 +363,10 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 		case BISHOP:
 			v = check_bishop_moveset(from_x, from_y, to_x, to_y);
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid bishop move" : "Invalid bishop move");
+			return v;
+		case ROOK:
+			v = check_rook_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid rook move" : "Invalid rook move");
 			return v;
 	}
 }
