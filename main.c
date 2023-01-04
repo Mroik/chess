@@ -220,6 +220,8 @@ void setup_board()
 			board[x][y].piece = EMPTY;
 		}
 	}
+	board[4][4].piece = ROOK;
+	board[4][4].side = WHITE;
 }
 
 bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
@@ -273,6 +275,9 @@ bool check_knight_moveset(int from_x, int from_y, int to_x, int to_y)
 bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	bool ne = true, se = true, sw = true, nw = true;
+	if(abs(from_x - to_x) != abs(from_y - to_y))
+		return false;
+
 	for(int i = 1; i <= 7; i++) {
 		if(ne && from_x + i == to_x && from_y + i == to_y) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
@@ -312,8 +317,11 @@ bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
 bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	bool n = true, e = true, s = true, w = true;
+	if(from_x != to_x && from_y != to_y)
+		return false;
+
 	for(int i = 1; i <= 7; i++) {
-		if(n && from_x == to_x && from_y + i == to_y) {
+		if(n && from_y + i == to_y) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
 				return false;
 			return true;
@@ -321,7 +329,7 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 			n = false;
 		}
 
-		if(e && from_x + i == to_x && from_y == to_y) {
+		if(e && from_x + i == to_x) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
 				return false;
 			return true;
@@ -329,7 +337,7 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 			e = false;
 		}
 
-		if(s && from_x == to_x && from_y - i == to_y) {
+		if(s && from_y - i == to_y) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
 				return false;
 			return true;
@@ -337,7 +345,7 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 			s = false;
 		}
 
-		if(w && from_x - i == to_x && from_y == to_y) {
+		if(w && from_x - i == to_x) {
 			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
 				return false;
 			return true;
