@@ -220,8 +220,6 @@ void setup_board()
 			board[x][y].piece = EMPTY;
 		}
 	}
-	board[4][4].piece = ROOK;
-	board[4][4].side = WHITE;
 }
 
 bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
@@ -356,6 +354,44 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 	return false;
 }
 
+bool check_king_moveset(int from_x, int from_y, int to_x, int to_y)
+{
+	if(from_x + 1 == to_x && from_y == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x + 1 == to_x && from_y - 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x == to_x && from_y - 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x - 1 == to_x && from_y - 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x - 1 == to_x && from_y == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x - 1 == to_x && from_y + 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x == to_x && from_y + 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	} else if(from_x + 1 == to_x && from_y + 1 == to_y) {
+		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
+			return false;
+		return true;
+	}
+	return false;
+}
+
 bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	bool v;
@@ -381,6 +417,12 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 			v |= check_rook_moveset(from_x, from_y, to_x, to_y);
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid queen move" : "Invalid queen move");
 			return v;
+		case KING:
+			v = check_king_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid king move" : "Invalid king move");
+			return v;
+		default:
+			return false;
 	}
 }
 
