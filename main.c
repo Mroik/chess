@@ -368,6 +368,11 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 			v = check_rook_moveset(from_x, from_y, to_x, to_y);
 			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid rook move" : "Invalid rook move");
 			return v;
+		case QUEEN:
+			v = check_bishop_moveset(from_x, from_y, to_x, to_y);
+			v |= check_rook_moveset(from_x, from_y, to_x, to_y);
+			SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, v ? "Valid queen move" : "Invalid queen move");
+			return v;
 	}
 }
 
