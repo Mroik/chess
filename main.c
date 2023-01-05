@@ -275,39 +275,29 @@ bool check_bishop_moveset(int from_x, int from_y, int to_x, int to_y)
 	bool ne = true, se = true, sw = true, nw = true;
 	if(abs(from_x - to_x) != abs(from_y - to_y))
 		return false;
+	if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == board[from_x][from_y].side)
+		return false;
 
 	for(int i = 1; i <= 7; i++) {
-		if(ne && from_x + i == to_x && from_y + i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(ne && from_x + i == to_x && from_y + i == to_y)
 			return true;
-		} else if(ne && board[from_x + i][from_y + i].piece != EMPTY) {
+		else if(ne && board[from_x + i][from_y + i].piece != EMPTY)
 			ne = false;
-		}
 
-		if(se && from_x + i == to_x && from_y - i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(se && from_x + i == to_x && from_y - i == to_y)
 			return true;
-		} else if(se && board[from_x + i][from_y - i].piece != EMPTY) {
+		else if(se && board[from_x + i][from_y - i].piece != EMPTY)
 			se = false;
-		}
 
-		if(sw && from_x - i == to_x && from_y - i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(sw && from_x - i == to_x && from_y - i == to_y)
 			return true;
-		} else if(sw && board[from_x - i][from_y - i].piece != EMPTY) {
+		else if(sw && board[from_x - i][from_y - i].piece != EMPTY)
 			sw = false;
-		}
 
-		if(nw && from_x - i == to_x && from_y + i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(nw && from_x - i == to_x && from_y + i == to_y)
 			return true;
-		} else if(nw && board[from_x - i][from_y + i].piece != EMPTY) {
+		else if(nw && board[from_x - i][from_y + i].piece != EMPTY)
 			nw = false;
-		}
 	}
 	return false;
 }
@@ -317,78 +307,54 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 	bool n = true, e = true, s = true, w = true;
 	if(from_x != to_x && from_y != to_y)
 		return false;
+	if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == board[from_x][from_y].side)
+		return false;
 
 	for(int i = 1; i <= 7; i++) {
-		if(n && from_y + i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(n && from_y + i == to_y)
 			return true;
-		} else if(n && board[from_x][from_y + i].piece != EMPTY) {
+		else if(n && board[from_x][from_y + i].piece != EMPTY)
 			n = false;
-		}
 
-		if(e && from_x + i == to_x) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(e && from_x + i == to_x)
 			return true;
-		} else if(e && board[from_x + i][from_y].piece != EMPTY) {
+		else if(e && board[from_x + i][from_y].piece != EMPTY)
 			e = false;
-		}
 
-		if(s && from_y - i == to_y) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(s && from_y - i == to_y)
 			return true;
-		} else if(s && board[from_x][from_y - i].piece != EMPTY) {
+		else if(s && board[from_x][from_y - i].piece != EMPTY)
 			s = false;
-		}
 
-		if(w && from_x - i == to_x) {
-			if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-				return false;
+		if(w && from_x - i == to_x)
 			return true;
-		} else if(w && board[from_x - i][from_y].piece != EMPTY) {
+		else if(w && board[from_x - i][from_y].piece != EMPTY)
 			w = false;
-		}
 	}
 	return false;
 }
 
 bool check_king_moveset(int from_x, int from_y, int to_x, int to_y)
 {
-	if(from_x + 1 == to_x && from_y == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == board[from_x][from_y].side)
+		return false;
+
+	if(from_x + 1 == to_x && from_y == to_y)
 		return true;
-	} else if(from_x + 1 == to_x && from_y - 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x + 1 == to_x && from_y - 1 == to_y)
 		return true;
-	} else if(from_x == to_x && from_y - 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x == to_x && from_y - 1 == to_y)
 		return true;
-	} else if(from_x - 1 == to_x && from_y - 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x - 1 == to_x && from_y - 1 == to_y)
 		return true;
-	} else if(from_x - 1 == to_x && from_y == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x - 1 == to_x && from_y == to_y)
 		return true;
-	} else if(from_x - 1 == to_x && from_y + 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x - 1 == to_x && from_y + 1 == to_y)
 		return true;
-	} else if(from_x == to_x && from_y + 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x == to_x && from_y + 1 == to_y)
 		return true;
-	} else if(from_x + 1 == to_x && from_y + 1 == to_y) {
-		if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == turn)
-			return false;
+	else if(from_x + 1 == to_x && from_y + 1 == to_y)
 		return true;
-	}
 	return false;
 }
 
