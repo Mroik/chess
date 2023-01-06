@@ -7,6 +7,7 @@
 #include <string.h>
 
 #define SIZE 640
+#define SQUARE_SIZE SIZE/8
 #define WHITE true
 #define BLACK false
 
@@ -406,62 +407,78 @@ bool is_in_check(int side)
 	int y = side == WHITE ? w_y : b_y;
 
 	// Knight
-	if(board[x + 1][y + 2].piece == KNIGHT && board[x + 1][y + 2].side != side)
+	if(x + 1 >= 0 && x + 1 < 8 && y + 2 >= 0 && y + 2 < 8 && board[x + 1][y + 2].piece == KNIGHT
+			&& board[x + 1][y + 2].side != side)
 		return true;
-	if(board[x + 2][y + 1].piece == KNIGHT && board[x + 2][y + 1].side != side)
+	if(x + 2 >= 0 && x + 2 < 8 && y + 1 >= 0 && y + 1 < 8 && board[x + 2][y + 1].piece == KNIGHT
+			&& board[x + 2][y + 1].side != side)
 		return true;
-	if(board[x + 2][y - 1].piece == KNIGHT && board[x + 2][y - 1].side != side)
+	if(x + 2 >= 0 && x + 2 < 8 && y - 1 >= 0 && y - 1 < 8 && board[x + 2][y - 1].piece == KNIGHT
+			&& board[x + 2][y - 1].side != side)
 		return true;
-	if(board[x + 1][y - 2].piece == KNIGHT && board[x + 1][y - 2].side != side)
+	if(x + 1 >= 0 && x + 1 < 8 && y - 2 >= 0 && y - 2 < 8 && board[x + 1][y - 2].piece == KNIGHT
+			&& board[x + 1][y - 2].side != side)
 		return true;
-	if(board[x - 1][y - 2].piece == KNIGHT && board[x - 1][y - 2].side != side)
+	if(x - 1 >= 0 && x - 1 < 8 && y - 2 >= 0 && y - 2 < 8 && board[x - 1][y - 2].piece == KNIGHT
+			&& board[x - 1][y - 2].side != side)
 		return true;
-	if(board[x - 2][y - 1].piece == KNIGHT && board[x - 2][y - 1].side != side)
+	if(x - 2 >= 0 && x - 2 < 8 && y - 1 >= 0 && y - 1 < 8 && board[x - 2][y - 1].piece == KNIGHT
+			&& board[x - 2][y - 1].side != side)
 		return true;
-	if(board[x - 2][y + 1].piece == KNIGHT && board[x - 2][y + 1].side != side)
+	if(x - 2 >= 0 && x - 2 < 8 && y + 1 >= 0 && y + 1 < 8 && board[x - 2][y + 1].piece == KNIGHT
+			&& board[x - 2][y + 1].side != side)
 		return true;
-	if(board[x - 1][y + 2].piece == KNIGHT && board[x - 1][y + 2].side != side)
+	if(x - 1 >= 0 && x - 1 < 8 && y + 2 >= 0 && y + 2 < 8 && board[x - 1][y + 2].piece == KNIGHT
+			&& board[x - 1][y + 2].side != side)
 		return true;
 
 	// Bishop and queen
 	bool ne = true, se = true, sw = true, nw = true;
 	for(int i = 1; i <= 7; i++) {
-		if(ne && (board[x + i][y + i].piece == BISHOP || board[x + i][y + i].piece == QUEEN) && board[x + i][y + i].side != side)
+		if(x + i >= 0 && x + i < 8 && y + i >= 0 && y + i < 8 && ne && (board[x + i][y + i].piece == BISHOP
+					|| board[x + i][y + i].piece == QUEEN) && board[x + i][y + i].side != side)
 			return true;
-		else if(ne && board[x + i][y + i].piece != EMPTY)
+		else if(x + i >= 0 && x + i < 8 && y + i >= 0 && y + i < 8 && ne && board[x + i][y + i].piece != EMPTY)
 			ne = false;
-		if(se && (board[x + i][y - i].piece == BISHOP || board[x + i][y - i].piece == QUEEN) && board[x + i][y - i].side != side)
+		if(x + i >= 0 && x + i < 8 && y - i >= 0 && y - i < 8 && se && (board[x + i][y - i].piece == BISHOP
+					|| board[x + i][y - i].piece == QUEEN) && board[x + i][y - i].side != side)
 			return true;
-		else if(se && board[x + i][y - i].piece != EMPTY)
+		else if(x + i >= 0 && x + i < 8 && y - i >= 0 && y - i < 8 && se && board[x + i][y - i].piece != EMPTY)
 			se = false;
-		if(sw && (board[x - i][y - i].piece == BISHOP || board[x - i][y - i].piece == QUEEN) && board[x - i][y - i].side != side)
+		if(x - i >= 0 && x - i < 8 && y - i >= 0 && y - i < 8 && sw && (board[x - i][y - i].piece == BISHOP
+					|| board[x - i][y - i].piece == QUEEN) && board[x - i][y - i].side != side)
 			return true;
-		else if(sw && board[x - i][y - i].piece != EMPTY)
+		else if(x - i >= 0 && x - i < 8 && y - i >= 0 && y - i < 8 && sw && board[x - i][y - i].piece != EMPTY)
 			sw = false;
-		if(nw && (board[x - i][y + i].piece == BISHOP || board[x - i][y + i].piece == QUEEN) && board[x - i][y + i].side != side)
+		if(x - i >= 0 && x - i < 8 && y + i >= 0 && y + i < 8 && nw && (board[x - i][y + i].piece == BISHOP
+					|| board[x - i][y + i].piece == QUEEN) && board[x - i][y + i].side != side)
 			return true;
-		else if(nw && board[x - i][y + i].piece != EMPTY)
+		else if(x - i >= 0 && x - i < 8 && y + i >= 0 && y + i < 8 && nw && board[x - i][y + i].piece != EMPTY)
 			nw = false;
 	}
 
 	// Rook and queen
 	bool n = true, e = true, s = true, w = true;
 	for(int i = 1; i <= 7; i++) {
-		if(n && (board[x][y + i].piece == ROOK || board[x][y + i].piece == QUEEN) && board[x][y + i].side != side)
+		if(y + i >= 0 && y + i < 8 && n && (board[x][y + i].piece == ROOK || board[x][y + i].piece == QUEEN)
+				&& board[x][y + i].side != side)
 			return true;
-		else if(n && board[x][y + i].piece != EMPTY)
+		else if(y + i >= 0 && y + i < 8 && n && board[x][y + i].piece != EMPTY)
 			n = false;
-		if(e && (board[x + i][y].piece == ROOK || board[x + i][y].piece == QUEEN) && board[x + i][y].side != side)
+		if(x + i >= 0 && x + i < 8 && e && (board[x + i][y].piece == ROOK || board[x + i][y].piece == QUEEN)
+				&& board[x + i][y].side != side)
 			return true;
-		else if(e && board[x + i][y].piece != EMPTY)
+		else if(x + i >= 0 && x + i < 8 && e && board[x + i][y].piece != EMPTY)
 			e = false;
-		if(s && (board[x][y - i].piece == ROOK || board[x][y - i].piece == QUEEN) && board[x][y - i].side != side)
+		if(y - i >= 0 && y - i < 8 && s && (board[x][y - i].piece == ROOK || board[x][y - i].piece == QUEEN)
+				&& board[x][y - i].side != side)
 			return true;
-		else if(s && board[x][y - i].piece != EMPTY)
+		else if(y - i >= 0 && y - i < 8 && s && board[x][y - i].piece != EMPTY)
 			s = false;
-		if(w && (board[x - i][y].piece == ROOK || board[x - i][y].piece == QUEEN) && board[x - i][y].side != side)
+		if(x - i >= 0 && x - i < 8 && w && (board[x - i][y].piece == ROOK || board[x - i][y].piece == QUEEN)
+				&& board[x - i][y].side != side)
 			return true;
-		else if(w && board[x - i][y].piece != EMPTY)
+		else if(x - i >= 0 && x - i < 8 && w && board[x - i][y].piece != EMPTY)
 			w = false;
 	}
 	return false;
@@ -493,10 +510,10 @@ void make_move(int from_x, int from_y, int to_x, int to_y)
 		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "This move puts your king in check!");
 		board[from_x][from_y] = board[to_x][to_y];
 		board[to_x][to_y] = prev;
-		if(turn == WHITE) {
+		if(board[from_x][from_y].piece == KING && turn == WHITE) {
 			w_x = prev_x;
 			w_y = prev_y;
-		} else {
+		} else if(board[from_x][from_y].piece == KING && turn == BLACK) {
 			b_x = prev_x;
 			b_y = prev_y;
 		}
@@ -519,8 +536,8 @@ void draw_chessboard()
 		for(int y = 0; y < 8; y++) {
 			bool x_even = !(x % 2);
 			bool y_even = !(y % 2);
-			cell.x = x * 80;
-			cell.y = y * 80;
+			cell.x = x * SQUARE_SIZE;
+			cell.y = y * SQUARE_SIZE;
 
 			if(selected[0] == x &&  7 - selected[1] == y)
 				SDL_SetRenderDrawColor(renderer, 127, 255, 0, SDL_ALPHA_OPAQUE);
@@ -544,8 +561,8 @@ void draw_pieces()
 
 			cell.h = SIZE / 8;
 			cell.w = SIZE / 8;
-			cell.x = x * 80;
-			cell.y = (7 - y) * 80;
+			cell.x = x * SQUARE_SIZE;
+			cell.y = (7 - y) * SQUARE_SIZE;
 
 			to_draw += board[x][y].piece;
 			if(SDL_RenderCopy(renderer, sprites[to_draw], NULL, &cell))
