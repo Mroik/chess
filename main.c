@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <SDL2/SDL.h>
@@ -38,6 +39,8 @@ SDL_Renderer* renderer;
 // Game abstraction
 
 bool turn;
+int w_x, w_y;
+int b_x, b_y;
 Cell board[8][8];
 int selected[2];
 
@@ -220,6 +223,10 @@ void setup_board()
 			board[x][y].piece = EMPTY;
 		}
 	}
+	w_x = 4;
+	w_y = 0;
+	b_x = 4;
+	b_y = 7;
 }
 
 bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
@@ -336,6 +343,7 @@ bool check_rook_moveset(int from_x, int from_y, int to_x, int to_y)
 
 bool check_king_moveset(int from_x, int from_y, int to_x, int to_y)
 {
+	// TODO Implement castling
 	if(board[to_x][to_y].piece != EMPTY && board[to_x][to_y].side == board[from_x][from_y].side)
 		return false;
 
@@ -392,10 +400,110 @@ bool check_moveset(int from_x, int from_y, int to_x, int to_y)
 	}
 }
 
+bool is_in_check(int side)
+{
+	int x = side == WHITE ? w_x : b_x;
+	int y = side == WHITE ? w_y : b_y;
+
+	// Knight
+	if(board[x + 1][y + 2].piece == KNIGHT && board[x + 1][y + 2].side != side)
+		return true;
+	if(board[x + 2][y + 1].piece == KNIGHT && board[x + 2][y + 1].side != side)
+		return true;
+	if(board[x + 2][y - 1].piece == KNIGHT && board[x + 2][y - 1].side != side)
+		return true;
+	if(board[x + 1][y - 2].piece == KNIGHT && board[x + 1][y - 2].side != side)
+		return true;
+	if(board[x - 1][y - 2].piece == KNIGHT && board[x - 1][y - 2].side != side)
+		return true;
+	if(board[x - 2][y - 1].piece == KNIGHT && board[x - 2][y - 1].side != side)
+		return true;
+	if(board[x - 2][y + 1].piece == KNIGHT && board[x - 2][y + 1].side != side)
+		return true;
+	if(board[x - 1][y + 2].piece == KNIGHT && board[x - 1][y + 2].side != side)
+		return true;
+
+	// Bishop and queen
+	bool ne = true, se = true, sw = true, nw = true;
+	for(int i = 1; i <= 7; i++) {
+		if(ne && (board[x + i][y + i].piece == BISHOP || board[x + i][y + i].piece == QUEEN) && board[x + i][y + i].side != side)
+			return true;
+		else if(ne && board[x + i][y + i].piece != EMPTY)
+			ne = false;
+		if(se && (board[x + i][y - i].piece == BISHOP || board[x + i][y - i].piece == QUEEN) && board[x + i][y - i].side != side)
+			return true;
+		else if(se && board[x + i][y - i].piece != EMPTY)
+			se = false;
+		if(sw && (board[x - i][y - i].piece == BISHOP || board[x - i][y - i].piece == QUEEN) && board[x - i][y - i].side != side)
+			return true;
+		else if(sw && board[x - i][y - i].piece != EMPTY)
+			sw = false;
+		if(nw && (board[x - i][y + i].piece == BISHOP || board[x - i][y + i].piece == QUEEN) && board[x - i][y + i].side != side)
+			return true;
+		else if(nw && board[x - i][y + i].piece != EMPTY)
+			nw = false;
+	}
+
+	// Rook and queen
+	bool n = true, e = true, s = true, w = true;
+	for(int i = 1; i <= 7; i++) {
+		if(n && (board[x][y + i].piece == ROOK || board[x][y + i].piece == QUEEN) && board[x][y + i].side != side)
+			return true;
+		else if(n && board[x][y + i].piece != EMPTY)
+			n = false;
+		if(e && (board[x + i][y].piece == ROOK || board[x + i][y].piece == QUEEN) && board[x + i][y].side != side)
+			return true;
+		else if(e && board[x + i][y].piece != EMPTY)
+			e = false;
+		if(s && (board[x][y - i].piece == ROOK || board[x][y - i].piece == QUEEN) && board[x][y - i].side != side)
+			return true;
+		else if(s && board[x][y - i].piece != EMPTY)
+			s = false;
+		if(w && (board[x - i][y].piece == ROOK || board[x - i][y].piece == QUEEN) && board[x - i][y].side != side)
+			return true;
+		else if(w && board[x - i][y].piece != EMPTY)
+			w = false;
+	}
+	return false;
+}
+
 void make_move(int from_x, int from_y, int to_x, int to_y)
 {
 	if(!check_moveset(from_x, from_y, to_x, to_y))
 		return;
+	int prev_x, prev_y;
+
+	if(board[from_x][from_y].piece == KING && turn == WHITE) {
+		prev_x = w_x;
+		prev_y = w_y;
+		w_x = to_x;
+		w_y = to_y;
+	} else if(board[from_x][from_y].piece == KING && turn == BLACK) {
+		prev_x = b_x;
+		prev_y = b_y;
+		b_x = to_x;
+		b_y = to_y;
+	}
+
+	Cell prev = board[to_x][to_y];
+	board[to_x][to_y] = board[from_x][from_y];
+	board[from_x][from_y].piece = EMPTY;
+
+	if(is_in_check(turn)) {
+		SDL_LogInfo(SDL_LOG_CATEGORY_APPLICATION, "This move puts your king in check!");
+		board[from_x][from_y] = board[to_x][to_y];
+		board[to_x][to_y] = prev;
+		if(turn == WHITE) {
+			w_x = prev_x;
+			w_y = prev_y;
+		} else {
+			b_x = prev_x;
+			b_y = prev_y;
+		}
+		return;
+	}
+	selected[0] = -1;
+	selected[1] = -1;
 }
 
 // Draw functions
