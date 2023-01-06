@@ -233,6 +233,7 @@ void setup_board()
 bool check_pawn_moveset(int from_x, int from_y, int to_x, int to_y)
 {
 	// TODO en passe
+	// TODO promotion
 	if(board[from_x][from_y].side == WHITE) {
 		if(from_x == to_x && from_y == 1 && to_y == 3 && board[to_x][to_y].piece == EMPTY)
 			return true;
