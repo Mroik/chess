@@ -23,7 +23,7 @@ void check_input(SDL_MouseButtonEvent event)
 	if(selected[0] == -1) {
 		selected[0] = x_s;
 		selected[1] = y_s;
-	} else if(selected[0] != -1) {
+	} else {
 		make_move(selected[0], selected[1], x_s, y_s);
 	}
 }

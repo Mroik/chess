@@ -3,9 +3,6 @@
 #include "include/input.h"
 #include "include/utils.h"
 
-extern bool turn;
-extern int selected[2];
-
 int main(int argc, char** argv)
 {
 	init_prog();
