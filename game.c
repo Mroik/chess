@@ -225,7 +225,19 @@ bool is_in_check(int side)
 	int x = side == WHITE ? w_x : b_x;
 	int y = side == WHITE ? w_y : b_y;
 
-	// TODO Check for eventual pawn checks
+	// Pawn
+	if(side == WHITE) {
+		if(board[x + 1][y + 1].side == BLACK && board[x + 1][y + 1].piece == PAWN)
+			return true;
+		if(board[x - 1][y + 1].side == BLACK && board[x - 1][y + 1].piece == PAWN)
+			return true;
+	} else {
+		if(board[x + 1][y - 1].side == WHITE && board[x + 1][y - 1].piece == PAWN)
+			return true;
+		if(board[x - 1][y - 1].side == WHITE && board[x - 1][y - 1].piece == PAWN)
+			return true;
+	}
+
 	// Knight
 	if(x + 1 >= 0 && x + 1 < 8 && y + 2 >= 0 && y + 2 < 8 && board[x + 1][y + 2].piece == KNIGHT
 			&& board[x + 1][y + 2].side != side)
