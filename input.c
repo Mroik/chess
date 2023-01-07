@@ -15,8 +15,8 @@ void check_input(SDL_MouseButtonEvent event)
 	if(event.x < 0 || event.x > SIZE || event.y < 0 || event.y > SIZE)
 		return;
 
-	x_s = event.x / (SIZE / 8);
-	y_s = (SIZE - event.y) / (SIZE / 8);
+	x_s = event.x / SQUARE_SIZE;
+	y_s = (SIZE - event.y) / SQUARE_SIZE;
 	if(selected[0] == -1 && (turn != board[x_s][y_s].side || board[x_s][y_s].piece == EMPTY))
 		return;
 
